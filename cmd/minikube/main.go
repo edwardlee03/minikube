@@ -29,14 +29,20 @@ import (
 
 const minikubeEnableProfile = "MINIKUBE_ENABLE_PROFILING"
 
+/**
+ * Minikube 启动入口
+ */
 func main() {
+	// 1. 刷新所有挂起的日志I/O
 	defer glog.Flush()
 
 	if os.Getenv(minikubeEnableProfile) == "1" {
 		defer profile.Start(profile.TraceProfile).Stop()
 	}
 	if os.Getenv(constants.IsMinikubeChildProcess) == "" {
+		// 2. 启动驱动程序
 		machine.StartDriver()
 	}
+	// 3. 将所有子命令添加到根命令集
 	cmd.Execute()
 }
